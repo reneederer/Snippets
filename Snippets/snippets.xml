@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProgramData>
+  <Configuration>
+    <DefaultWorkingDirectory>c:/users/rene</DefaultWorkingDirectory>
+    <Interpreter default="true" name="ahk" path="c:/program files/AutoHotkey/AutoHotkey.ahk"></Interpreter>
+    <Interpreter name="python" path="C:\Program Files\Python36\python.exe"></Interpreter>
+  </Configuration>
+
+  <Snippet workingDirectory="c:/hallo" interpreter="ahk">
+    <Category>SQL Script</Category>
+    <Description>
+      Update PDF-file for printing
+    </Description>
+    <CommandText>
+      msgBox,hallok iiweuriit! HHHHH
+      msgBox,anotherTest!
+    </CommandText>
+  </Snippet>
+  <Snippet>
+    <Category>Clipboard</Category>
+    <Description>
+      Update PDF-file for printing
+    </Description>
+    <CommandText>
+      msgBox,hallo welt1jkaaajkiii!
+    </CommandText>
+  </Snippet>
+  <Snippet>
+    <Category>Text</Category>
+    <Description>
+      Template for a jaa class
+    </Description>
+    <CommandText>
+      clipboard =
+      (
+      public class MyClas
+      {
+      public static void main(String[] args)
+      {
+      System.out.println("hello world!");
+      }
+      }
+      )
+    </CommandText>
+  </Snippet>
+
+  <Snippet>
+    <Category>clipBoaRd</Category>
+    <Description>
+      Update PDF-file for printing
+    </Description>
+    <CommandText>
+      msgBox,hallo welt1jkaaajkiii!
+    </CommandText>
+  </Snippet>
+
+  <Snippet>
+    <Category>SQL</Category>
+    <Description>Select table names with column name</Description>
+    <CommandText>select table_name from all_tab_columns where column_name = 'PICK_COLUMN'</CommandText>
+  </Snippet>
+  <Snippet>
+    <Description>Alter user password</Description>
+    <CommandText>alter user someUser identified by somePassword</CommandText>
+  </Snippet>
+
+  <Snippet>
+    <Category>PL/SQL</Category>
+    <Description>pl/sql function</Description>
+    <CommandText>
+      create or replace function functionName()
+      return int retuizy
+    </CommandText>
+  </Snippet>
+</ProgramData>
+
