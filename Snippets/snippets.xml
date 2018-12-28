@@ -1,76 +1,118 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ProgramData>
   <Configuration>
     <DefaultWorkingDirectory>c:/users/rene</DefaultWorkingDirectory>
     <Interpreter default="true" name="ahk" path="c:/program files/AutoHotkey/AutoHotkey.ahk"></Interpreter>
     <Interpreter name="python" path="C:\Program Files\Python36\python.exe"></Interpreter>
   </Configuration>
-
-  <Snippet workingDirectory="c:/hallo" interpreter="ahk">
-    <Category>SQL Script</Category>
-    <Description>
-      Update PDF-file for printing
-    </Description>
+  <Snippet>
+    <Category>Apex,Menu</Category>
+    <Description>Edit Prozna</Description>
     <CommandText>
-      msgBox,hallok iiweuriit! HHHHH
-      msgBox,anotherTest!
+      runWait,notepad++.exe C:\workspace\APEX_VERW7\entw\sqlscri\bhinsert_prozna_v7.sql
+      FileDelete,tmp.sql
+      FileAppend,@C:\workspace\APEX_VERW7\entw\sqlscri\bhinsert_prozna_v7`n,tmp.sql
+      FileAppend,@C:\workspace\APEX_VERW7\entw\sqlscri\insert/hiprozna_v7,tmp.sql
+      runWait,C:\Senso\Orawin6i\BIN\SQLPLUS.EXE senso/senso@entwv7 @tmp.sql
     </CommandText>
   </Snippet>
   <Snippet>
-    <Category>Clipboard</Category>
-    <Description>
-      Update PDF-file for printing
-    </Description>
+    <Category>Oracle, Foreign Keys, FK</Category>
+    <Description>Show Foreign Keys on table</Description>
     <CommandText>
-      msgBox,hallo welt1jkaaajkiii!
-    </CommandText>
-  </Snippet>
-  <Snippet>
-    <Category>Text</Category>
-    <Description>
-      Template for a jaa class
-    </Description>
-    <CommandText>
-      clipboard =
-      (
-      public class MyClas
+      SetTitleMatchMode 2
+      IfWinExist PL/SQL Developer
       {
-      public static void main(String[] args)
+      WinActivate, PL/SQL Developer
+      }
+      else
       {
-      System.out.println("hello world!");
+      msgBox,return!
+      return
       }
-      }
-      )
+      sleep,200
+      InputBox, tableName, Table-Name, Table-Name,,,,,,,,bewope
+      sql = SELECT a.table_name, a.column_name, c_pk.table_name r_table_name`nFROM all_cons_columns a`nJOIN all_constraints c ON a.owner = c.owner AND a.constraint_name = c.constraint_name`nJOIN all_constraints c_pk ON c.r_owner = c_pk.owner AND c.r_constraint_name = c_pk.constraint_name`nWHERE c.constraint_type = 'R'`n  AND c.r_owner = 'SENSO41'`n  AND lower(a.table_name) = lower('%tableName%')`;
+      sendInput,^+!n
+      sleep,300
+      sendInput,%sql%{f8}
     </CommandText>
   </Snippet>
-
   <Snippet>
-    <Category>clipBoaRd</Category>
-    <Description>
-      Update PDF-file for printing
-    </Description>
+    <Category>Apex,Patch</Category>
+    <Description>Apex Patch System</Description>
     <CommandText>
-      msgBox,hallo welt1jkaaajkiii!
+      run,http://sigapexprod:9009/ords
+      sleep,3000
+      sendInput,+{tab}+{tab}SENSOWEB{tab}ADMIN{tab}Manager124{!}
+      sleep,80
+      sendInput,{enter}
     </CommandText>
   </Snippet>
-
   <Snippet>
-    <Category>SQL</Category>
-    <Description>Select table names with column name</Description>
-    <CommandText>select table_name from all_tab_columns where column_name = 'PICK_COLUMN'</CommandText>
-  </Snippet>
-  <Snippet>
-    <Description>Alter user password</Description>
-    <CommandText>alter user someUser identified by somePassword</CommandText>
-  </Snippet>
-
-  <Snippet>
-    <Category>PL/SQL</Category>
-    <Description>pl/sql function</Description>
+    <Category>Plsql Developer</Category>
+    <Description>Insert nLogPos</Description>
     <CommandText>
-      create or replace function functionName()
-      return int retuizy
+    nLogPos := ""
+    insertLogPos()
+    {
+    global nLogPos
+      if(RegexMatch(nLogPos, "^\d+(\.\d+)?$") == 0)
+      {
+      return
+      }
+      sleep,250
+      sendInput,nLogPos := %nLogPos%`;`n
+      nLogPos := nLogPos + 10
+      return
+    }
+
+      inputBox,nLogPos,nLogPos,Press escape to exit.`nStartwert nLogPos,,,,,,,,10
+      ~LButton::
+      insertLogPos()
+      return
+
+      escape::
+      exitApp
+      return
+    </CommandText>
+  </Snippet>
+  <Snippet>
+    <Category>WebLogic</Category>
+    <Description>WebLogic Server</Description>
+    <CommandText>
+      run,http://sigapexprod:9500/console
+      sleep,3000
+      sendInput,^aweblogic{tab}ora11cle
+      sleep,80
+      sendInput,{enter}
+    </CommandText>
+  </Snippet>
+  <Snippet>
+    <Category>Apex</Category>
+    <Description>Refresh Apex</Description>
+    <CommandText>
+      run,sqlplus.exe senso/senso@entwv7
+      sleep,300
+      sendInput,chcp 1252{enter}
+      sleep,100
+      sendInput,BEGIN{enter}FOR rSessions IN (SELECT SID,serial# FROM v$session WHERE username = 'APEX_PUBLIC_USER') LOOP{enter}EXECUTE IMMEDIATE 'alter system kill session '''''rSessions.sid''','||rSessions.serial#||''''`;{enter}END LOOP`;{enter}END`;{enter}{enter}/
+      sleep,80
+      ; sendInput,{enter}
+    </CommandText>
+  </Snippet>
+  <Snippet>
+    <Category>Pl/SQL</Category>
+    <Description>Refresh Apex</Description>
+    <CommandText>
+      run,sqlplus.exe senso/senso@entwv7
+      sleep,300
+      sendInput,BEGIN FOR rSessions IN (SELECT SID,serial# FROM v$session WHERE username = 'APEX_PUBLIC_USER') LOOP EXECUTE IMMEDIATE 'alter system kill session '''||rSessions.sid||','||rSessions.serial#||''''`; END LOOP`; END`;
+      sendInput,/
+      sleep,80
+      ; sendInput,{enter}
     </CommandText>
   </Snippet>
 </ProgramData>
+
 

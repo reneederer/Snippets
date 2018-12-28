@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Interop;
 using System.Threading;
+using System.Text;
 
 namespace Snippets
 {
@@ -44,11 +45,16 @@ namespace Snippets
                 cs
                     .Select(c => s.IndexOf(c))
                     .Where(index => index != -1)
+                    .DefaultIfEmpty(-1)
                     .Min();
         }
 
         private static string InsertEvery(string s, int lineLength, string insertText)
         {
+            if(s.Trim().StartsWith("run"))
+            {
+                ;
+            }
             var restString = s.Trim() ?? "";
             var currentString = "";
             while(restString != "")
@@ -88,7 +94,8 @@ namespace Snippets
             {
                 try
                 {
-                    using (FileStream xmlStream = new FileStream(snippetsFile, FileMode.Open, FileAccess.Read))
+                    //using (FileStream xmlStream = new FileStream(snippetsFile, FileMode.Open, FileAccess.Read))
+                    using (StreamReader xmlStream = new StreamReader(snippetsFile, Encoding.Default, true))
                     {
                         using (XmlReader xmlReader = XmlReader.Create(xmlStream))
                         {
@@ -117,9 +124,11 @@ namespace Snippets
                                             });
                                     }
                                     dgSnippets.ItemsSource = snippets;
+                                    var s =
+                                            snippets.Select(y => y.Category.Split(new[] { ',' })).SelectMany(y => y).Select(y => y.Trim()).OrderBy(x => x).Distinct();
                                     cmbCategories.ItemsSource =
                                         new[] { "Show all" }
-                                            .Concat(snippets.Distinct(new CategoryComparer()).Select(x => x.Category));
+                                            .Concat(s);
                                     cmbCategories.SelectedIndex = 0;
                                 });
                         }
@@ -203,10 +212,12 @@ namespace Snippets
             var searchWords = tbSearch.Text.ToLower().Split(new [] { ' ' }).Where(x => x.Trim() != "");
             dgSnippets.ItemsSource =
                 snippets.Where(snippet => 
-                    (cmbCategories.SelectedIndex <= 0 || snippet.Category == cmbCategories.SelectedItem as string)
+                    (cmbCategories.SelectedIndex <= 0
+                      || (snippet.Category.Contains(cmbCategories.SelectedItem as string)))
                     && searchWords.All(word =>
                         snippet.CommandText.ToLower().Contains(word)
-                        || snippet.Description.ToLower().Contains(word)));
+                        || snippet.Description.ToLower().Contains(word)
+                        || snippet.Category.ToLower().Contains(word)));
         }
 
         private void tbSearch_KeyDown(object sender, KeyEventArgs e)
@@ -218,7 +229,11 @@ namespace Snippets
                 {
                         dgSnippets.SelectedIndex = 0;
                 }
-                var selectedRow = (DataGridRow)dgSnippets.ItemContainerGenerator.ContainerFromIndex(dgSnippets.SelectedIndex);
+                var selectedRow = dgSnippets.ItemContainerGenerator.ContainerFromIndex(dgSnippets.SelectedIndex) as DataGridRow;
+                if(selectedRow == null)
+                {
+                    return;
+                }
                 FocusManager.SetIsFocusScope(selectedRow, true);
                 FocusManager.SetFocusedElement(selectedRow, selectedRow);
             }
@@ -245,21 +260,7 @@ namespace Snippets
             }
             else if(e.Key == Key.Enter)
             {
-                var snippet = dgSnippets.SelectedItem as Snippet;
-                if(snippet != null)
-                {
-                    Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + "/tmp");
-                    File.WriteAllText(System.AppDomain.CurrentDomain.BaseDirectory + "/tmp/ahk.ahk", snippet.CommandText);
-                    using (var p = new Process())
-                    {
-                        p.StartInfo.Arguments = "\"" + System.AppDomain.CurrentDomain.BaseDirectory + "/tmp/ahk.ahk\"";
-                        p.StartInfo.FileName = "c:/program files/AutoHotkey/AutoHotkey.exe";
-                        Process.Start(p.StartInfo).WaitForExit();
-                    }
-                    tbSearch.Focus();
-                    Hide();
-                    //App.Current.MainWindow.WindowState = WindowState.Minimized;
-                }
+                ExecuteSnippet(dgSnippets.SelectedItem as Snippet);
             }
             else if(e.Key == Key.Escape)
             {
@@ -268,20 +269,48 @@ namespace Snippets
             }
         }
 
+        private void ExecuteSnippet(Snippet snippet)
+        {
+            if (snippet != null)
+            {
+                tbSearch.Focus();
+                Hide();
+                Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + "/tmp");
+                File.WriteAllText(System.AppDomain.CurrentDomain.BaseDirectory + "/tmp/ahk.ahk", snippet.CommandText);
+                using (var p = new Process())
+                {
+                    p.StartInfo.Arguments = "\"" + System.AppDomain.CurrentDomain.BaseDirectory + "/tmp/ahk.ahk\"";
+                    p.StartInfo.FileName = "c:/program files/AutoHotkey/AutoHotkey.exe";
+                    Process.Start(p.StartInfo).WaitForExit();
+                }
+            }
+        }
+
         private void dgSnippets_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("double!");
+            ExecuteSnippet(dgSnippets.SelectedItem as Snippet);
         }
 
         private void btnEditSnippets_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("snippets.xml");
+            using (var p = new Process())
+            {
+                p.StartInfo.FileName = "notepad++.exe";
+                p.StartInfo.Arguments = "snippets.xml";
+                p.Start();
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            this.Hide();
-            e.Cancel = true;
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(this.WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
         }
     }
 }

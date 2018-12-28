@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snippets"
         mc:Ignorable="d"
-        Title="Snippets" Height="450" Width="900" Icon="images/r-icon.ico" Closing="Window_Closing">
+        Title="Snippets" Height="Auto" Icon="images/r-icon.ico" Closing="Window_Closing" StateChanged="Window_StateChanged" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid HorizontalAlignment="Left">
         <ComboBox x:Name="cmbCategories" Grid.ColumnSpan="1" Margin="38,38,87.6,0" VerticalAlignment="Top" SelectionChanged="cmbCategories_SelectionChanged" Height="27" TabIndex="1" />
         <TextBox x:Name="tbSearch" Grid.ColumnSpan="1" Height="25" Margin="38,81,37.8,0" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="2" TextChanged="tbSearch_TextChanged" PreviewKeyDown="tbSearch_KeyDown" GotFocus="tbSearch_GotFocus"/>
